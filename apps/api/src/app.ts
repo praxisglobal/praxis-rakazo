@@ -73,6 +73,7 @@ import { MarkdownMemoryStore } from "@rakazo/memory";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { type AppEnv, loadEnv } from "./env.js";
+import { mountFactoryBridgeRoutes } from "./factory-bridge.js";
 import { createMessagingInboundHandler } from "./messaging-inbound.js";
 import { mountMessagingWebhookRoutes } from "./messaging-webhook.js";
 import { createRouter } from "./router.js";
@@ -419,6 +420,15 @@ export async function createApp(
     return actor;
   });
   mountWebhookHttpRoutes(app, { prisma, secrets, events, jobs });
+  mountFactoryBridgeRoutes(app, {
+    prisma,
+    secrets,
+    events,
+    jobs,
+    praxisEngineUrl: env.praxisEngineUrl,
+    praxisWebhookSecret: env.praxisWebhookSecret,
+    publicApiUrl: env.apiUrl,
+  });
   // Messaging webhooks only exist when the surface is enabled.
   if (messaging) {
     const inbound = createMessagingInboundHandler({
