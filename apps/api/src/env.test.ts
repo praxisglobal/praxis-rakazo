@@ -189,4 +189,20 @@ describe("loadEnv", () => {
     ).toBe(false);
     expect(loadEnv({ ...base, NODE_ENV: "development" }).nodeEnv).toBe("development");
   });
+
+  it("defaults the praxis-engine bridge URL and leaves the shared secret unset", () => {
+    const env = loadEnv(base);
+    expect(env.praxisEngineUrl).toBe("http://127.0.0.1:3333");
+    expect(env.praxisWebhookSecret).toBeUndefined();
+  });
+
+  it("reads the praxis-engine bridge URL and shared secret from the environment", () => {
+    const env = loadEnv({
+      ...base,
+      PRAXIS_ENGINE_URL: "http://127.0.0.1:3999",
+      RAKAZO_WEBHOOK_SECRET: " shared-secret-value ",
+    });
+    expect(env.praxisEngineUrl).toBe("http://127.0.0.1:3999");
+    expect(env.praxisWebhookSecret).toBe("shared-secret-value");
+  });
 });
