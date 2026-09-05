@@ -68,6 +68,10 @@ export interface AppEnv {
   updaterToken: string | undefined;
   /** Current application image tag; used for compose manual-upgrade command selection. */
   imageTag: string | undefined;
+  /** Base URL of praxis-engine's factory API, used by the outbound factory-build bridge. */
+  praxisEngineUrl: string;
+  /** Shared secret with praxis-engine (RAKAZO_WEBHOOK_SECRET in both services' env). */
+  praxisWebhookSecret: string | undefined;
 }
 
 export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
@@ -138,6 +142,8 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     updaterUrl,
     updaterToken,
     imageTag: optional(source.RAKAZO_IMAGE_TAG),
+    praxisEngineUrl: source.PRAXIS_ENGINE_URL ?? "http://127.0.0.1:3333",
+    praxisWebhookSecret: optional(source.RAKAZO_WEBHOOK_SECRET),
   };
 }
 
